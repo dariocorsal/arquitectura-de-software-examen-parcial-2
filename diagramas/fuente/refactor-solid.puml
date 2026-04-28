@@ -1,0 +1,36 @@
+@startuml
+interface CatalogoBiblioteca {
+    + buscarLibro(isbn : String) : Libro
+}
+
+interface Logger {
+    + registrar(evento : String, usuario : String) : void
+}
+
+class ServicioPrestamos {
+    + prestarLibro(estudiante : Estudiante, isbn : String) : void
+    + devolverLibro(idPrestamo : String) : void
+}
+
+class ServicioMultas {
+    + registrarMulta(idPrestamo : String, monto : double) : void
+    + consultarMultas(idEstudiante : String) : List
+}
+
+class ServicioNotificacion {
+    + enviarEmail(destinatario : String, mensaje : String) : void
+}
+
+class GeneradorReportes {
+    + generarReportePDF(parametros : Map) : byte[]
+}
+
+class ServicioAutenticacion {
+    + autenticarUsuario(credenciales : String) : Usuario
+}
+
+ServicioPrestamos --> CatalogoBiblioteca  : usa
+ServicioPrestamos --> ServicioNotificacion : notifica
+ServicioPrestamos --> Logger              : registra
+ServicioMultas    --> ServicioNotificacion : notifica
+@enduml

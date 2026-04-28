@@ -1,0 +1,16 @@
+@startuml
+interface CatalogoBiblioteca {
+    + buscarLibro(isbn : String) : Libro
+}
+
+class AdaptadorCatalogoCETYS implements CatalogoBiblioteca {
+    - catalogoExterno : CatalogoCETYSSOAP
+    + buscarLibro(isbn : String) : Libro
+}
+
+class CatalogoCETYSSOAP {
+    + consultarObra(codigoCETYS : String, formato : String) : ResultadoSOAP
+}
+
+AdaptadorCatalogoCETYS --> CatalogoCETYSSOAP : usa
+@enduml

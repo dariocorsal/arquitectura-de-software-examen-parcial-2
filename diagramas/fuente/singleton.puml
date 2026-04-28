@@ -1,0 +1,14 @@
+@startuml
+interface Logger {
+    + registrar(evento : String, usuario : String) : void
+}
+
+class AuditoriaLogger implements Logger {
+    - {static} instancia : AuditoriaLogger
+    - AuditoriaLogger()
+    + {static} obtenerInstancia() : AuditoriaLogger
+    + registrar(evento : String, usuario : String) : void
+}
+
+AuditoriaLogger --> AuditoriaLogger : instancia
+@enduml

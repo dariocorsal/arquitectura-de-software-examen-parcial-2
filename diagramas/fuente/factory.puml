@@ -1,0 +1,23 @@
+@startuml
+interface Usuario {
+    + getIdUsuario() : String
+    + getNombre() : String
+    + getTipo() : String
+    + puedePedirPrestado() : boolean
+}
+
+class Estudiante    implements Usuario
+class Bibliotecario implements Usuario
+class Admin         implements Usuario
+class Posgrado      implements Usuario
+
+note bottom of Posgrado : Agregado sin modificar\ncódigo existente
+
+class FabricaDeUsuarios {
+    - {static} creadores : Map<String, BiFunction>
+    + {static} registrarTipo(tipo : String, creador : BiFunction) : void
+    + {static} crear(tipo : String, idUsuario : String, nombre : String) : Usuario
+}
+
+FabricaDeUsuarios ..> Usuario : crea
+@enduml

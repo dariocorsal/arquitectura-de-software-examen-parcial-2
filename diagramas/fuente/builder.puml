@@ -1,0 +1,36 @@
+@startuml
+class SolicitudPrestamo {
+    - estudiante : Estudiante
+    - libro : Libro
+    - fechaDevolucion : Date
+    - notasEspeciales : String
+    - renovacionAutomatica : boolean
+    - numRenovaciones : int
+    - SolicitudPrestamo(builder : Builder)
+    + getEstudiante() : Estudiante
+    + getLibro() : Libro
+    + getFechaDevolucion() : Date
+    + getNotasEspeciales() : String
+    + isRenovacionAutomatica() : boolean
+    + getNumRenovaciones() : int
+}
+
+class "SolicitudPrestamo.Builder" as Builder {
+    - estudiante : Estudiante
+    - libro : Libro
+    - fechaDevolucion : Date
+    - notasEspeciales : String = null
+    - renovacionAutomatica : boolean = false
+    - numRenovaciones : int = 1
+    + estudiante(val : Estudiante) : Builder
+    + libro(val : Libro) : Builder
+    + fechaDevolucion(val : Date) : Builder
+    + notasEspeciales(val : String) : Builder
+    + renovacionAutomatica(val : boolean) : Builder
+    + numRenovaciones(val : int) : Builder
+    + construir() : SolicitudPrestamo
+}
+
+Builder --> SolicitudPrestamo : crea
+SolicitudPrestamo +-- Builder
+@enduml

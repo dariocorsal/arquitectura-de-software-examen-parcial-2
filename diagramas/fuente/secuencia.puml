@@ -1,0 +1,42 @@
+@startuml
+actor Estudiante
+
+participant "ControladorPrestamos"          as Controller
+participant "FabricaDeUsuarios\n[Factory]"  as Factory
+participant "RegistrarPrestamoUseCase"       as UseCase
+participant "AdaptadorCatalogoCETYS\n[Adapter]" as AdaptCatalogo
+participant "SolicitudPrestamo.Builder\n[Builder]" as Builder
+participant "AdaptadorPagosBancario\n[Adapter]"   as AdaptPagos
+participant "RepositorioPrestamos"           as Repo
+participant "AuditoriaLogger\n[Singleton]"   as Logger
+
+Estudiante -> Controller : POST /prestamos\n(tipo, isbn, fechaDevolucion)
+
+Controller -> Factory : crear("ESTUDIANTE", id, nombre)
+Factory --> Controller : estudiante : Estudiante
+
+Controller -> UseCase : ejecutar(estudiante, isbn, fechaDevolucion)
+
+UseCase -> AdaptCatalogo : buscarLibro(isbn)
+note right : vía interfaz CatalogoBiblioteca
+AdaptCatalogo -> AdaptCatalogo : consultarObra(isbn, "MARC21") → SOAP
+AdaptCatalogo --> UseCase : libro : Libro
+
+UseCase -> Builder : .estudiante().libro().fechaDevolucion().construir()
+Builder --> UseCase : solicitud : SolicitudPrestamo (inmutable)
+
+UseCase -> AdaptPagos : cobrarFianza(idEstudiante, 50.0)
+note right : vía interfaz ServicioPagos
+AdaptPagos -> AdaptPagos : POST /cobros → REST Bancario
+AdaptPagos --> UseCase : true
+
+UseCase -> Repo : guardar(solicitud)
+Repo --> UseCase : OK
+
+UseCase -> Logger : registrar("PRESTAMO_REGISTRADO", idEstudiante)
+note right : vía interfaz Logger
+Logger --> UseCase : OK
+
+UseCase --> Controller : OK
+Controller --> Estudiante : 201 Creado
+@enduml
